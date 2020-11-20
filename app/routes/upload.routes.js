@@ -1,4 +1,4 @@
-const filecontroller = require("../controllers/upload.controller");
+const filecontroller = require("../controllers/file.controller");
 
 module.exports = function(app) {
   app.post("/api/file/upload", filecontroller.upload);
