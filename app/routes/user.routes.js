@@ -1,7 +1,6 @@
 const { authJwt } = require("../middlewares");
 const controller = require("../controllers/user.controller");
-const filecontroller = require("../controllers/file.controller");
-
+const otpcontroller = require("../controllers/otp.controller");
 
 module.exports = function(app) {
   app.use(function(req, res, next) {
@@ -11,6 +10,12 @@ module.exports = function(app) {
     );
     next();
   });
+
+
+  app.get("/api/user/otp", otpcontroller.sendOTP);
+  app.get("/api/user/verifyotp", otpcontroller.verifyOTP);
+
+  app.get("/api/user/profile", controller.showProfile);
 
   app.get("/api/test/all", controller.allAccess);
 
@@ -27,11 +32,4 @@ module.exports = function(app) {
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.adminBoard
   );
-
-
-  
-  
-
-
-
 };
