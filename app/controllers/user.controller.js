@@ -1,9 +1,20 @@
+const config = require("../config/auth.config");
+const db = require("../models");
+const User = db.user;
+const Role = db.role;
+
+
+
 exports.allAccess = (req, res) => {
     res.status(200).send("Public Content.");
   };
   
   exports.userBoard = (req, res) => {
     res.status(200).send("User Content.");
+  };
+  
+  exports.makerBoard = (req, res) => {
+    res.status(200).send("Cinemaker Content.");
   };
   
   exports.adminBoard = (req, res) => {
@@ -14,7 +25,22 @@ exports.allAccess = (req, res) => {
     res.status(200).send("Moderator Content.");
   };
   
-  // Retrieve all Tutorials from the database.
+
+
+
+exports.showProfile = (req, res) => {
+  User.findOne(req.params.username)
+  .select('first_name last_name gender mobile_number country username email')
+  .exec(function(err, doc){
+    if(err || doc === null){
+      res.status(404).json({error: 'PersonNotFound'});
+    } else {
+      res.json(doc);
+    }
+});
+ 
+};
+
 exports.findAll = (req, res) => {
   const first_name = req.query.first_name;
   var condition = first_name ? { first_name: { $regex: new RegExp(first_name), $options: "i" } } : {};
@@ -30,3 +56,4 @@ exports.findAll = (req, res) => {
       });
     });
 };
+

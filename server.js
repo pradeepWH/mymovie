@@ -3,33 +3,24 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
 const dbConfig = require ("./app/config/db.config"); 
-const nodemailer = require('nodemailer');
-global.__basedir = __dirname;
-
 var corsOptions = {
   origin: "http://localhost:8081"
 };
 
-let transport = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  service: 'gmail', 
-  port: 2525,
-  auth: {
-     user: 'pradeep.verma@webhungers.com',
-     pass: 'Pradeep.WH'
-  }
-});
-
 app.use(cors(corsOptions));
+// parse requests of content-type - application/json
 app.use(bodyParser.json());
+
+// parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
 const db = require("./app/models");
 const Role = db.role;
 
+// .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
 db.mongoose
-  .connect(`mongodb+srv://dbPradeep:dbPradeepPass@cluster0.tu33o.mongodb.net/usersmovie?retryWrites=true&w=majority`, {
+  .connect(`${dbConfig.DBUrl}`, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
@@ -81,27 +72,6 @@ db.mongoose
   }
 
 
-  //send mail
-app.get('/api/send_plain_mail', function(req, res) {
-  console.log('sending email..');
-  const message = {
-    from: 'pradeep.verma@webhungers.com', // Sender address
-    to: 'pradeep.verma@webhungers.com',         // recipients
-    subject: 'test mail from Nodejs', // Subject line
-    text: 'Successfully! received mail using nodejs' // Plain text body
-};
-transport.sendMail(message, function(err, info) {
-    if (err) {
-      console.log(err)
-    } else {
-      console.log('mail has sent.');
-      console.log(info);
-    }
-});
-});
-
-
-
 // simple route
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to movie users application." });
@@ -111,7 +81,7 @@ app.get("/", (req, res) => {
 require('./app/routes/auth.routes')(app);
 require('./app/routes/user.routes')(app);
 require('./app/routes/movie.routes')(app);
-require('./app/routes/upload.routes')(app);
+
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

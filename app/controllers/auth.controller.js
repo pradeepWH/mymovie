@@ -3,11 +3,17 @@ const db = require("../models");
 const User = db.user;
 const Role = db.role;
 
+
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 
 exports.signup = (req, res) => {
   const user = new User({
+    first_name: req.body.first_name,
+    last_name: req.body.last_name,
+    gender: req.body.gender,
+    mobile_number: req.body.mobile_number,
+    country: req.body.country,
     username: req.body.username,
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 8)
